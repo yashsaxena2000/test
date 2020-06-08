@@ -1,0 +1,63 @@
+ackage cucumberReport;
+import java.util.List;
+
+public class Element {
+	private List<After> after;
+	private String id;
+	private List<Before> before;
+	private String description;
+	private String name;
+	private String keyword;
+	private int line;
+	private List<Step> steps;
+	private String type;
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	public List<Step> getSteps() {
+		return steps;
+	}
+	public void setSteps(List<Step> steps) {
+		this.steps = steps;
+	}
+	
+	public int getLine() {
+		return line;
+	}
+	public void setLine(int line) {
+		this.line = line;
+	}
+	public List<After> getAfter() {
+		return after;
+	}
+	public String getId() {
+		return id;
+	}
+	public List<Before> getBefore() {
+		return before;
+	}
+	public Element(List<After> after, String id, List<Before> before, String description, String name, String keyword, int line,
+			List<Step> steps, String type) {
+		this.after = after;
+		this.id = id;
+		this.before = before;
+		this.description = description;
+		this.name = name;
+		this.keyword = keyword;
+		this.line = line;
+		this.steps = steps;
+		this.type = type;
+	}
+	
+
+}
