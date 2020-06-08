@@ -1,0 +1,57 @@
+package cucumberReport;
+import java.util.List;
+
+public class Feature {
+	
+	private String id;
+	private String description;
+	private String keyword;
+	private String name;
+	private int line;
+	private List<Element> elements;
+	private String uri;
+	public String getKeyword() {
+		return keyword;
+	}
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public List<Element> getElements() {
+		return elements;
+	}
+	public void setElements(List<Element> elements) {
+		this.elements = elements;
+	}
+	
+	public String getId() {
+		return id;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public int getLine() {
+		return line;
+	}
+	public String getUri() {
+		return uri;
+	}
+	public Feature(String id, String description, String keyword, String name, int line, List<Element> elements,
+			String uri) {
+		this.id = id;
+		this.description = description;
+		this.keyword = keyword;
+		this.name = name;
+		this.line = line;
+		this.elements = elements;
+		this.uri = uri;
+	}
+
+	
+	
+}
