@@ -1,0 +1,16 @@
+package cucumberReport;
+import java.util.List;
+
+public class After {
+    
+	private List<Embeddings> embeddings;
+
+	public List<Embeddings> getEmbeddings() {
+		return embeddings;
+	}
+	
+	private Result result;
+	
+	private Match match;
+	
+}
