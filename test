@@ -1,0 +1,168 @@
+package cucumberReport;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+
+import org.testng.ITestContext;
+import org.testng.annotations.Test;
+
+import com.aventstack.extentreports.AnalysisStrategy;
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.GherkinKeyword;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
+import com.aventstack.extentreports.reporter.configuration.Theme;
+import com.google.gson.Gson;
+
+import utilityClasses.DateUtility;  
+	
+public class Testing {  
+	     /**  
+	      * @param args  
+	     * @throws ClassNotFoundException 
+	      */  
+		
+		public static String errorString(String a){
+			if(a.contains("AssertionError")){
+				return "Actual value is diffrent from Expected value ";
+			}
+			if(a.contains("NoSuchElementException")){
+				return "The element(button,link etc) was not found due to enviorment or some other issue";
+			}
+			if(a.contains("UnhandledAlertException")){
+				return "There was unexpected alert that popped up during excution of this test.";
+			}
+			if(a.contains("TimeoutException")){
+				return "The page took a long to respond causing script to timeout.";
+			}
+			if(a.contains("StaleElementException")){
+				return "There was a page refresh when the element clicked.";
+			}
+			else{
+				return "Unable to catch this error. Need more analysis";
+			 }
+		}
+		
+	@Test
+	     public void generateReport(ITestContext context)  {  
+	  //        File inputJson= new File("src\\main\\java\\input.json");
+	      //   String path = "src\\main\\java\\"+File.separator+"input.json";
+	      //    FileInputStream fis = new FileInputStream(inputJson);
+	//          String content;
+	    	 
+			try(Reader reader = new FileReader("target//cucumber-reports/CucumberTestReport.json")) {
+		//		content = FileUtils.readFileToString(inputJson);
+			//	System.out.println(content);
+			
+//				Result result = new Result("pass");
+//				Step s = new Step(result,"given","do this");
+//				List<Step> l = new ArrayList<>();
+//				l.add(s);
+//				After af = new After();
+//				Before bf= new Before();
+//				Element ele= new Element(af,"ecustomer",bf,"","Login","scenStepario",1,l,"Scenario");
+//				List<Element> le = new ArrayList<Element>();
+//				le.add(ele);
+//				Feature fle= new Feature("e-customer","","scenStepario","one",1,le,"hhtps:");
+			//	Feature fl= new Feature("scenStepario","one",le);
+		//		Feature fle= new Feature("scenStepario","one",le);
+	           // Response resp = new Response(fle);
+	//			Feature[] res = new Feature[1];
+	//			res[0]= fle;
+			//	res[1]=fl;
+				Gson gson = new Gson();
+				Feature[] features = gson.fromJson(reader, Feature[].class);
+	//		System.out.println(gson.toJson(res));
+		//		System.out.println(gson.toJsonTree(Response[].class));
+		  //        Response response = gson.fromJson(content, Response.class);
+	//			System.out.println(features[0].getElements().get(0).getAfter().get(0).getEmbeddings().get(0).getData());
+		//          System.out.println(responses[0].getFeatures());
+				
+		//		 ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter(System.getProperty("user.dir") + "/test-output/SuiteUKExecutionReport--10012020-1205.html");
+
+				 ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter(System.getProperty("user.dir") + "/test-output/ExtentReports/"+context.getSuite().getName()+"/"+context.getSuite().getName()+" ExecutionReport-"+DateUtility.DDMMYYYYHHMM()+".html");
+			    	htmlReporter.config().setDocumentTitle(context.getSuite().getName() + " Report"); // Title of report
+					htmlReporter.config().setReportName(context.getSuite().getName() + " Report"); // Name of the report
+					htmlReporter.config().setTheme(Theme.STANDARD);
+				  
+				  ExtentReports extent = new ExtentReports();
+				  extent.attachReporter(htmlReporter);
+				  extent.setAnalysisStrategy(AnalysisStrategy.SUITE);
+				  // Passing General information
+				  extent.setSystemInfo("Enviornment", "UAT");
+				  extent.setSystemInfo("user", System.getProperty("user.name"));
+				  
+				  
+				  for(Feature feature:features){
+					 String featureStatus = "Pass";
+					 ExtentTest featureNode=null;
+					 for(Element element:feature.getElements()){
+					 String scenarioStatus = "Pass";
+						 for(Step step:element.getSteps()){
+							 if(step.getResult().getStatus().equalsIgnoreCase("failed")){
+								 featureStatus ="Fail";
+								 scenarioStatus="Fail";
+							 }
+						 }
+				     ExtentTest scenarioNode;
+						  if(element==feature.getElements().get(0)){
+							  if(featureStatus.equalsIgnoreCase("Fail")){
+								  featureNode = extent.createTest(feature.getName());
+							  }
+							  else{
+								  featureNode = extent.createTest(feature.getName());
+							  }
+						  }
+						  if(scenarioStatus.equalsIgnoreCase("Fail")){
+						  scenarioNode=featureNode.createNode(element.getName());
+						  }else{
+					      scenarioNode= featureNode.createNode(element.getName());
+						  }
+						  for(Step step:element.getSteps()){
+								 if(step.getResult().getStatus().equalsIgnoreCase("failed")){
+									System.out.println(step.getName());
+							//		 scenarioNode.fail(step.getKeyword()+" "+step.getName()).addScreenCaptureFromPath("data:image/png;base64,"+element.getAfter().get(0).getEmbeddings().get(0).getData());
+									 scenarioNode.fail(step.getKeyword()+" "+step.getName()).addScreenCaptureFromBase64String(element.getAfter().get(0).getEmbeddings().get(0).getData());
+									 //		   	 scenarioNode.log(Status.FAIL,"<img src=\"data:image/png;base64,"+element.getAfter().get(0).getEmbeddings().get(0).getData()+"\"");
+				//					 scenarioNode.addScreenCaptureFromPath("<img src=\"data:image/png;base64,"+element.getAfter().get(0).getEmbeddings().get(0).getData()+"\"");
+									 // (Status.FAIL,step.getKeyword()+" "+step.getName()).fail("Failed").addScreenCaptureFromPath("data:image/png;base64,"+element.getAfter().get(0).getEmbeddings().get(0).getData()+"\"");
+						     	//	     scenarioNode.addScreenCaptureFromPath("data:image/png;base64,"+element.getAfter().get(0).getEmbeddings().get(0).getData()+"\"");
+								//	 scenarioNode.log(Status.ERROR,step.getResult().getError_message().substring(step.getResult().getError_message().indexOf(":")+1, step.getResult().getError_message().indexOf("\n")));
+							//	     scenarioNode.log(Status.ERROR,"ERROR MESSAGE:"+errorString(step.getResult().getError_message())).addScreenCaptureFromPath("data:image/png;base64,"+element.getAfter().get(0).getEmbeddings().get(0).getData()+"\"");
+									 scenarioNode.log(Status.FAIL,"ERROR MESSAGE:"+errorString(step.getResult().getError_message()));
+								 }
+								 else if(step.getResult().getStatus().equalsIgnoreCase("passed")){
+									 try {
+										if(step.getOutput().length>0){ 
+										scenarioNode.log(Status.PASS,step.getKeyword()+" "+step.getName());	
+										for(String s :step.getOutput()) {
+										scenarioNode.log(Status.PASS, s);
+										}}
+									} catch (Exception e) {
+										// TODO Auto-generated catch block
+										scenarioNode.log(Status.PASS,step.getKeyword()+" "+step.getName());
+									}
+									
+								 }else{
+									 scenarioNode.log(Status.SKIP,step.getKeyword()+" "+step.getName());
+								 }
+							 }
+						 }
+						}
+				  extent.flush();
+						
+						 
+			}
+				
+				
+				
+			 catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        
+			
+	     
+	     }  
+	}
