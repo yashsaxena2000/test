@@ -1,0 +1,13 @@
+package cucumberReport;
+
+public class Output {
+	private int key;
+	private String value;
+	public int getKey() {
+		return key;
+	}
+	public String getValue() {
+		return value;
+	}
+	
+}
