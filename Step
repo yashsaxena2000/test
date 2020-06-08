@@ -1,0 +1,39 @@
+package cucumberReport;
+import java.util.List;
+
+public class Step {
+	
+	private String[] output;
+	private Result result;
+	private String keyword;
+	private String name;
+	
+	public Result getResult() {
+		return result;
+	}
+	public void setResult(Result result) {
+		this.result = result;
+	}
+	public String getKeyword() {
+		return keyword;
+	}
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public Step(Result result, String keyword, String name) {
+		this.result = result;
+		this.keyword = keyword;
+		this.name = name;
+	}
+	public String[] getOutput() {
+		return output;
+	}
+	
+}
